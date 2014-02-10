@@ -135,6 +135,8 @@ module Spree
     end
 
     def address_options
+      return {} if payment_method.preferred_solution.eql?('Mark') && current_order.bill_address.nil?
+
       {
         :Name => current_order.bill_address.try(:full_name),
         :Street1 => current_order.bill_address.address1,
