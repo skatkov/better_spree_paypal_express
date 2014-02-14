@@ -89,6 +89,7 @@ module Spree
 
     private
 
+
     def payment_method
       Spree::PaymentMethod.find(params[:payment_method_id])
     end
@@ -135,7 +136,7 @@ module Spree
     end
 
     def address_options
-      return {} if payment_method.preferred_solution.eql?('Mark') && current_order.bill_address.nil?
+      return {} unless address_required?
 
       {
         :Name => current_order.bill_address.try(:full_name),
@@ -148,7 +149,11 @@ module Spree
         :PostalCode => current_order.bill_address.zipcode
       }
     end
-    
+
+    def address_required?
+      !payment_method.preferred_solution.eql?('Mark')
+    end
+
     def completion_route(order)
       order_path(order, :token => order.token)
     end
